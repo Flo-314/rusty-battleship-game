@@ -1,6 +1,6 @@
 export interface Ship {
 	shipParts: ShipPart[];
-	hit(): void;
+	hit(cordinates: Cordinates): void;
 	isSunk(): boolean;
 	cordinates: Cordinates[];
 }
