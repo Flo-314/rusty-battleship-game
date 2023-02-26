@@ -1,4 +1,4 @@
-import type { Cordinates, Ship, ShipPart } from '$lib/types';
+import type { Board, Cell, Cordinates, Ship, ShipPart } from '$lib/types';
 import { shipPartFactory, CellFactory } from './battleship';
 
 export const generateCordinates = (cordinates: Cordinates, length: number): Cordinates[] => {
@@ -35,4 +35,35 @@ export const isShipSunk = (ship: Ship) => {
 		}
 	});
 	return isSunk;
+};
+export const gameboardIsLoose = (board: Board) => {
+	let status = true;
+	for (let i = 0; i < board.length; i++) {
+		for (let j = 0; j < board[i].length; j++) {
+			const cell: Cell = board[i][j];
+			if (cell.ship && cell.hit === false) {
+				status = false;
+			}
+		}
+	}
+
+	return status;
+};
+
+export const gameboardreceiveAttack = (board: Board, cordinates: Cordinates) => {
+	const targetSquare = board[cordinates.y - 1][cordinates.x - 1];
+	targetSquare.hit = true;
+	if (targetSquare.ship) {
+		targetSquare.ship.hit(cordinates);
+	}
+	return;
+};
+export const gameboardputPiece = (board: Board, ship: Ship) => {
+	const shipCordinates = ship.cordinates;
+	shipCordinates.forEach((shipCordinate) => {
+		const targetSquare = board[shipCordinate.y - 1][shipCordinate.x - 1];
+		targetSquare.ship = ship;
+	});
+
+	return;
 };

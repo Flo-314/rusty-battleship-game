@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import type { Player } from '$lib/types';
 import { describe, it, expect, test } from 'vitest';
-import { gameboardFactory, shipFactory, shipPartFactory } from './battleship';
+import {
+	gameboardFactory,
+	gameFactory,
+	playerFactory,
+	shipFactory,
+	shipPartFactory
+} from './battleship';
 
 describe('Ship Parts', () => {
 	const defaultShipPart = shipPartFactory({ x: 1, y: 2 });
@@ -157,11 +164,72 @@ describe('GameBoard', () => {
 	});
 });
 
-/* describe("Game" ( ) =>{
-// it should be defined
+describe('playerFactory', () => {
+	it('should create a human player', () => {
+		const name = 'Bob';
+		const isComputer = false;
 
-// the parts should be defined (gameboards,turn, players)
+		const player: Player = playerFactory(name, isComputer);
 
+		expect(player.name).toBe(name);
+		expect(player.isComputer).toBe(isComputer);
+		expect(typeof player.makeAMove).toBe('function');
+		expect(player.gameboard).toBeDefined();
+	});
 
+	it('should create a computer player ', () => {
+		const name = 'Alice';
+		const isComputer = true;
 
-}) */
+		const player: Player = playerFactory(name, isComputer);
+
+		expect(player.name).toBe(name);
+		expect(player.isComputer).toBe(isComputer);
+		expect(typeof player.makeAMove).toBe('function');
+		expect(player.gameboard).toBeDefined();
+	});
+
+	it('should create a computer player ', () => {
+		const name = 'Alice';
+		const isComputer = true;
+
+		const player: Player = playerFactory(name, isComputer);
+
+		const result = player.makeAMove();
+
+		expect(result).toHaveProperty('x');
+		expect(result).toHaveProperty('y');
+		expect(typeof result.x).toBe('number');
+		expect(typeof result.y).toBe('number');
+	});
+});
+
+describe('gameFactory', () => {
+	const game = gameFactory('Player 1', 'Player 2');
+
+	it('should create a game object', () => {
+		expect(game).toBeDefined();
+		expect(game.players[0]).toBeDefined();
+		expect(game.players[1]).toBeDefined();
+		expect(game.isPlayerTurn).toBe(true);
+		expect(game.paused).toBe(false);
+	});
+
+	it('should switch pause status when switchPause is called', () => {
+		game.switchPause();
+		expect(game.paused).toBe(true);
+		game.switchPause();
+		expect(game.paused).toBe(false);
+	});
+
+	it('should switch player turn when switchPlayerTurn is called', () => {
+		game.switchPlayerTurn();
+		expect(game.isPlayerTurn).toBe(false);
+		game.switchPlayerTurn();
+		expect(game.isPlayerTurn).toBe(true);
+	});
+});
+
+describe('game logic', () => {
+	//
+});

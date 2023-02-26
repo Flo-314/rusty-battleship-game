@@ -1,8 +1,25 @@
-export type Board = Cell[][];
+export interface Cordinates {
+	x: number;
+	y: number;
+}
 
 export interface Cell {
 	hit: boolean;
 	ship: Ship | null;
+}
+
+export type Board = Cell[][];
+export interface ShipPart {
+	hit(): void;
+	isSunk: boolean;
+	cordinates: Cordinates;
+}
+
+export interface Ship {
+	shipParts: ShipPart[];
+	hit(cordinates: Cordinates): void;
+	isSunk(): boolean;
+	cordinates: Cordinates[];
 }
 
 export interface Gameboard {
@@ -11,19 +28,13 @@ export interface Gameboard {
 	isLoose(): boolean;
 	board: Board;
 }
-export interface Ship {
-	shipParts: ShipPart[];
-	hit(cordinates: Cordinates): void;
-	isSunk(): boolean;
-	cordinates: Cordinates[];
+export interface Player {
+	gameboard: Gameboard;
+	name: string;
+	isComputer: boolean;
+	makeAMove(): Cordinates;
 }
-export interface ShipPart {
-	hit(): void;
-	isSunk: boolean;
-	cordinates: Cordinates;
-}
-
-export interface Cordinates {
-	x: number;
-	y: number;
+export interface Game {
+	players: [Player, Player];
+	isPlayerTurn: boolean;
 }

@@ -1,5 +1,8 @@
-import type { Cordinates, ShipPart, Ship, Gameboard, Board, Cell } from '$lib/types';
+import type { Cordinates, ShipPart, Ship, Gameboard, Board, Cell, Player, Game } from '$lib/types';
 import {
+	gameboardIsLoose,
+	gameboardputPiece,
+	gameboardreceiveAttack,
 	generateCordinates as GenerateCordinates,
 	generateShipParts as GenerateShipParts,
 	hitShip,
@@ -55,40 +58,47 @@ export const boardFactory = (): Board => {
 export const gameboardFactory = (): Gameboard => {
 	const board = boardFactory();
 	const putPiece = (ship: Ship): void => {
-		const shipCordinates = ship.cordinates;
-		shipCordinates.forEach((shipCordinate) => {
-			const targetSquare = board[shipCordinate.y - 1][shipCordinate.x - 1];
-			targetSquare.ship = ship;
-		});
-
-		return;
+		gameboardputPiece(board, ship);
 	};
 	const receiveAttack = (cordinates: Cordinates) => {
-		const targetSquare = board[cordinates.y - 1][cordinates.x - 1];
-		targetSquare.hit = true;
-		if (targetSquare.ship) {
-			targetSquare.ship.hit(cordinates);
-		}
-		return;
+		gameboardreceiveAttack(board, cordinates);
 	};
 	const isLoose = (): boolean => {
-		let status = true;
-		for (let i = 0; i < board.length; i++) {
-			for (let j = 0; j < board[i].length; j++) {
-				const cell: Cell = board[i][j];
-				if (cell.ship && cell.hit === false) {
-					status = false;
-				}
-			}
-		}
-
-		return status;
+		return gameboardIsLoose(board);
 	};
 
 	const gameBoard: Gameboard = { board, putPiece, isLoose, receiveAttack };
 
 	return gameBoard;
 };
-export const playerFactory = () => {
-	return {};
+export const playerFactory = (name: string, isComputer: boolean): Player => {
+	const gameboard = gameboardFactory();
+	const makeAMove = () => {
+		return { x: Math.floor(Math.random() * 10) + 1, y: Math.floor(Math.random() * 10) + 1 };
+	};
+
+	const player = { name, isComputer, makeAMove, gameboard };
+	return player;
+};
+
+export const gameFactory = (player1Name: string, player2Name: string): Game => {
+	// eslint-disable-next-line prefer-const
+	let game: Game;
+	const switchPlayerTurn = () => {
+		game.isPlayerTurn = !game.isPlayerTurn;
+	};
+	const switchPause = () => {
+		game.paused = !game.paused;
+	};
+	const player1 = playerFactory(player1Name, false);
+	const player2 = playerFactory(player2Name, true);
+
+	game = {
+		players: [player1, player2],
+		isPlayerTurn: true,
+		paused: false,
+		switchPause,
+		switchPlayerTurn
+	};
+	return game;
 };
