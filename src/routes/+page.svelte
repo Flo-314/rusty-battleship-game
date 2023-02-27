@@ -1,46 +1,72 @@
 <script lang="ts">
+	import Board from '$lib/components/board.svelte';
+	import type { Game, Board as BoardType } from '$lib/types';
 	import { gameFactory, shipFactory } from '$lib/utils/battleship';
 
+	/* 
+		BOTON JUGAR.
+			INTRODUCIR NOMBRE EN INPUT. BOTON INTRODUCIR.
+				TE DA PARA PONER PIEZAS. *1
+					UNA VEZ PUESTAS LAS PIEZAS COMIENZA EL JUEGO Y TENES QUE CLICKEAR EL OTRO CAMPO.
+					(cada vez que se clickea tiene que checkear si alguien gano)
+						RESPUESTA AUTOMATICA DE LA MAQUINA. SI NO ES VALIDO EL MOVIMIENTO VOLVER A HACER UNO NUEVO. *2
+							CUANDO ALGUIEN GANA PROMPT DE QUIEN GANO, Y UN RESTART O SALIR.
+
+
+
+						*1(PLUS: CLICK DERECHO ROTA LA DIRECION,PLUS+: PODES ELEGIR CUAL QUERES VOS PLUS+++: DRAG AN DROP)
+						*2(PLUS: QUE EVALUE ANTES SI ES VALIDO EL MOVIMIENTO. PLUS++ QUE SEA UNA IA QUE EVALUE EL MEJOR MOVIMIENTO)
+						*3(BOTON SALIR O REINICIAR)
+	*/
+
 	//juego
+	let inputIntroduceName = '';
+	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' = 'selectName';
+	let game: null | Game = null;
+	let shipIndex = 0;
 
-	const game = gameFactory('player1', 'compu');
-	console.log(game);
-	let gameboard1 = game.players[0].gameboard;
-	let board1 = game.players[0].gameboard.board;
-
-	gameboard1.putPiece(shipFactory({ x: 1, y: 2 }, 3), true);
-
-	let gameboard2 = game.players[1].gameboard;
-	let board2 = game.players[1].gameboard.board;
-
-	gameboard2.putPiece(shipFactory({ x: 3, y: 2 }, 3), true);
-	console.log(board2);
-
-	gameboard1.receiveAttack({ x: 1, y: 2 });
-	gameboard1.receiveAttack({ x: 3, y: 2 });
-
-	gameboard2.receiveAttack({ x: 3, y: 2 });
-	gameboard2.receiveAttack({ x: 5, y: 2 });
+	const startGame = (inputIntroduceName: string) => {
+		game = gameFactory(inputIntroduceName, 'computer');
+		gameStatus = 'piecePlacement';
+	};
 </script>
 
-<div class="flex">
-	<div class="grid">
-		{#each board1 as yLine}
-			{#each yLine as cell}
-				<div class="caja" class:shipGood={cell.ship}>
-					{cell.hit ? 'x' : ''}
-				</div>
-			{/each}
-		{/each}
-	</div>
-
-	<div class="grid">
-		{#each board2 as yLine}
-			{#each yLine as cell}
-				<div class="caja" class:shipBad={cell.ship}>{cell.hit ? 'x' : ''}</div>
-			{/each}
-		{/each}
-	</div>
+<div>
+	{#if gameStatus === 'selectName'}
+		<input type="text" placeholder="introduce name" bind:value={inputIntroduceName} />
+		<button
+			on:click={() => {
+				startGame(inputIntroduceName);
+			}}>play</button
+		>
+	{:else if game?.players[0]}
+		<div class="flex">
+			<Board
+				isBattleship={false}
+				on:placingShip={(e) => {
+					if (game && gameStatus === 'piecePlacement') {
+						const ships = [5, 4, 3, 2];
+						const cordinates = e.detail.cordinates;
+						const gameBoard = game.players[0].gameboard;
+						const ship = shipFactory(cordinates, ships[shipIndex]);
+						gameBoard.putPiece(ship, cordinates);
+						shipIndex += 1;
+						game.players[0].gameboard.board = game.players[0].gameboard.board;
+						if (shipIndex === ships.length) {
+							gameStatus = 'Battleship';
+						}
+					}
+				}}
+				isPlacing={gameStatus === 'piecePlacement'}
+				board={game.players[0].gameboard.board}
+			/>
+			<Board
+				isBattleship={gameStatus === 'Battleship'}
+				isPlacing={false}
+				board={game?.players[1].gameboard.board}
+			/>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -48,34 +74,5 @@
 		display: flex;
 		gap: 30px;
 		justify-content: center;
-	}
-	.caja {
-		background-color: white;
-		border: 1px solid black;
-		padding: 40px;
-		font-size: 20px;
-		text-align: center;
-	}
-
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(10, 1fr);
-		grid-template-rows: repeat(10, 1fr);
-		gap: 1px;
-		background-color: black;
-		padding: 5px;
-		width: 45%;
-	}
-	.shipGood {
-		border-color: blue;
-		background-color: blue;
-		color: black;
-		font-size: 30px;
-	}
-	.shipBad {
-		border-color: red;
-		background-color: red;
-		color: black;
-		font-size: 30px;
 	}
 </style>

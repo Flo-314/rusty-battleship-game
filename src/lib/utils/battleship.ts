@@ -15,6 +15,7 @@ export const shipFactory = (
 ): Ship => {
 	// eslint-disable-next-line prefer-const
 	let ship: Ship;
+
 	const generateCordinates = GenerateCordinates;
 	const generateShipParts = GenerateShipParts;
 	const hit = (hitCordinates: Cordinates): void => {
