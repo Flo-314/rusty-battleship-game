@@ -61,6 +61,19 @@
 				board={game.players[0].gameboard.board}
 			/>
 			<Board
+				on:receivingAttack={(e) => {
+					if (game && gameStatus === 'Battleship') {
+						const cordinates = e.detail.cordinates;
+						const gameBoard = game?.players[1].gameboard;
+						const computer = game.players[1];
+						gameBoard?.receiveAttack(cordinates);
+						game.players[1].gameboard.board = game.players[1].gameboard.board;
+
+						const playergameBoard = game?.players[0].gameboard;
+
+						playergameBoard.receiveAttack(computer.makeAMove());
+					}
+				}}
 				isBattleship={gameStatus === 'Battleship'}
 				isPlacing={false}
 				board={game?.players[1].gameboard.board}

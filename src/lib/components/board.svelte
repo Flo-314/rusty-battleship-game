@@ -6,10 +6,17 @@
 
 	export let board: Board;
 	export let isPlacing: boolean;
+	export let isBattleship: boolean;
 	$: console.log(board[0]);
 
 	const placeShip = (cordinates: Cordinates) => {
 		dispatch('placingShip', {
+			cordinates
+		});
+	};
+
+	const receiveAttack = (cordinates: Cordinates) => {
+		dispatch('receivingAttack', {
 			cordinates
 		});
 	};
@@ -21,14 +28,19 @@
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
 				on:click={() => {
+					const cordinates = { x: j + 1, y: i + 1 };
 					if (isPlacing) {
-						placeShip({ x: j + 1, y: i + 1 });
+						placeShip(cordinates);
+					}
+					if (isBattleship) {
+						receiveAttack(cordinates);
 					}
 				}}
 				class="caja"
 				class:shipBad={cell.ship}
 			>
-				{cell.ship ? 'asdasdasd' : ''}
+				{cell.ship ? 'O' : ''}
+				{cell.hit ? 'X' : ''}
 			</div>
 		{/each}
 	{/each}
