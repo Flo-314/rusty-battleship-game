@@ -23,23 +23,27 @@
 	let inputIntroduceName = '';
 	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' = 'selectName';
 	let game: null | Game = null;
-	let shipIndex = 0;
+	let shipIndex: number = 0;
+	let isVertical: boolean = false;
 
 	const startGame = (inputIntroduceName: string) => {
 		game = gameFactory(inputIntroduceName, 'computer');
 		gameStatus = 'piecePlacement';
 	};
 	const placingShip = (cordinates: Cordinates) => {
+		const ships = [5, 4, 3, 2];
 		if (game && gameStatus === 'piecePlacement') {
-			const ships = [5, 4, 3, 2];
-			const gameBoard = game.players[0].gameboard;
-			const ship = shipFactory(cordinates, ships[shipIndex]);
+			const gameBoard = game?.players[0].gameboard;
+
+			const ship = shipFactory(cordinates, ships[shipIndex], isVertical);
 			gameBoard.putPiece(ship, true);
 			shipIndex += 1;
 			game.players[0].gameboard.board = game.players[0].gameboard.board;
 			if (shipIndex === ships.length) {
 				gameStatus = 'Battleship';
 			}
+		} else {
+			prompt('jaoisdjoaisjd');
 		}
 	};
 	const onAttacking = (cordinates: Cordinates) => {
@@ -83,6 +87,14 @@
 				board={game?.players[1].gameboard.board}
 			/>
 		</div>
+	{/if}
+
+	{#if gameStatus === 'piecePlacement'}
+		<button
+			on:click={() => {
+				isVertical = !isVertical;
+			}}>put pieces {isVertical ? 'vertically' : 'horizontal'}</button
+		>
 	{/if}
 </div>
 

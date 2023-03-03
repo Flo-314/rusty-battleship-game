@@ -21,8 +21,10 @@ export const shipFactory = (cordinates: Cordinates, length: number, isVertical?:
 	};
 
 	const shipCordinates = generateCordinates(cordinates, length, isVertical);
+
 	const shipParts = generateShipParts(cordinates, length, isVertical);
 	// eslint-disable-next-line prefer-const
+
 	ship = {
 		cordinates: shipCordinates,
 		hit,

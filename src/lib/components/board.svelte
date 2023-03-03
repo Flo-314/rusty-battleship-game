@@ -7,7 +7,6 @@
 	export let board: Board;
 	export let isPlacing: boolean;
 	export let isBattleship: boolean;
-	$: console.log(board[0]);
 
 	const placeShip = (cordinates: Cordinates) => {
 		dispatch('placingShip', {
