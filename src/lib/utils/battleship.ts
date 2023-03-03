@@ -3,13 +3,12 @@ import {
 	gameboardIsLoose,
 	gameboardputPiece,
 	gameboardreceiveAttack,
-	generateCordinates,
 	generateShipParts,
 	hitShip,
 	isShipSunk
 } from './utils';
 
-export const shipFactory = (cordinates: Cordinates, length: number, isVertical?: boolean): Ship => {
+export const shipFactory = (cordinates: Cordinates, length: number): Ship => {
 	// eslint-disable-next-line prefer-const
 	let ship: Ship;
 
@@ -20,20 +19,17 @@ export const shipFactory = (cordinates: Cordinates, length: number, isVertical?:
 		return isShipSunk(ship);
 	};
 
-	const shipCordinates = generateCordinates(cordinates, length, isVertical);
-
-	const shipParts = generateShipParts(cordinates, length, isVertical);
+	const shipParts = generateShipParts(length);
 	// eslint-disable-next-line prefer-const
 
 	ship = {
-		cordinates: shipCordinates,
 		hit,
 		isSunk,
 		shipParts
 	};
 	return ship;
 };
-export const shipPartFactory = (cordinates: Cordinates): ShipPart => {
+export const shipPartFactory = (): ShipPart => {
 	// eslint-disable-next-line prefer-const
 	let shipPart: ShipPart;
 
@@ -42,7 +38,7 @@ export const shipPartFactory = (cordinates: Cordinates): ShipPart => {
 	const hit = () => {
 		shipPart.isSunk = true;
 	};
-	shipPart = { cordinates, isSunk, hit };
+	shipPart = { isSunk, hit };
 	return shipPart;
 };
 
@@ -55,8 +51,8 @@ export const boardFactory = (): Board => {
 };
 export const gameboardFactory = (): Gameboard => {
 	const board = boardFactory();
-	const putPiece = (ship: Ship): void => {
-		gameboardputPiece(board, ship);
+	const putPiece = (length: number, horizontal: boolean, cordinates: Cordinates): boolean => {
+		return gameboardputPiece(board, length, horizontal, cordinates);
 	};
 	const receiveAttack = (cordinates: Cordinates) => {
 		gameboardreceiveAttack(board, cordinates);

@@ -21,7 +21,7 @@
 
 	//juego
 	let inputIntroduceName = '';
-	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' = 'selectName';
+	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' = 'piecePlacement';
 	let game: null | Game = null;
 	let shipIndex: number = 0;
 	let isVertical: boolean = false;
@@ -34,16 +34,17 @@
 		const ships = [5, 4, 3, 2];
 		if (game && gameStatus === 'piecePlacement') {
 			const gameBoard = game?.players[0].gameboard;
-
-			const ship = shipFactory(cordinates, ships[shipIndex], isVertical);
-			gameBoard.putPiece(ship, true);
-			shipIndex += 1;
-			game.players[0].gameboard.board = game.players[0].gameboard.board;
-			if (shipIndex === ships.length) {
-				gameStatus = 'Battleship';
+			const isPieceValid = gameBoard.putPiece(ships[shipIndex], isVertical, cordinates);
+			console.log(isPieceValid);
+			if (isPieceValid) {
+				shipIndex += 1;
+				game.players[0].gameboard.board = game.players[0].gameboard.board;
+				if (shipIndex === ships.length) {
+					gameStatus = 'Battleship';
+				}
+			} else {
+				console.log('asd');
 			}
-		} else {
-			prompt('jaoisdjoaisjd');
 		}
 	};
 	const onAttacking = (cordinates: Cordinates) => {
@@ -56,6 +57,8 @@
 			playergameBoard.receiveAttack(computer.makeAMove());
 		}
 	};
+
+	startGame('asd');
 </script>
 
 <div>

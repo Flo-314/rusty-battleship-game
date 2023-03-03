@@ -1,12 +1,14 @@
 import type { Board, Cell, Cordinates, Ship, ShipPart } from '$lib/types';
-import { shipPartFactory, CellFactory } from './battleship';
+import { shipPartFactory, CellFactory, shipFactory } from './battleship';
 
 export const generateCordinates = (
 	cordinates: Cordinates,
 	length: number,
-	isVertical?: boolean
-): Cordinates[] => {
+	isVertical: boolean,
+	board: Board
+): Cordinates[] | null => {
 	const newCordinates: Cordinates[] = [];
+	let isValid = true;
 	for (let i = 0; i < length; i++) {
 		const newCordinate = { ...cordinates };
 		if (!isVertical) {
@@ -14,21 +16,24 @@ export const generateCordinates = (
 		} else {
 			newCordinate.y += i;
 		}
-		newCordinates.push(newCordinate);
+		const areValidCordinates = areCordinatesValid(newCordinate, board);
+		if (areValidCordinates) {
+			newCordinates.push(newCordinate);
+		} else {
+			isValid = false;
+			break;
+		}
 	}
-	return newCordinates;
+	if (isValid) {
+		return newCordinates;
+	} else {
+		return null;
+	}
 };
 
-export const generateShipParts = (
-	cordinates: Cordinates,
-	length: number,
-	isVertical?: boolean
-): ShipPart[] => {
-	const Cordinates = generateCordinates(cordinates, length, isVertical);
-
-	return Cordinates.map((cordinates: Cordinates) => {
-		return shipPartFactory(cordinates);
-	});
+export const generateShipParts = (length: number): ShipPart[] => {
+	const shipParts = new Array(length).fill(null).map(() => shipPartFactory());
+	return shipParts;
 };
 export const getBoard = () => new Array(10).fill(new Array(10).fill(CellFactory()));
 export const hitShip = (ship: Ship, cordinates: Cordinates, hitCordinates: Cordinates) => {
@@ -70,12 +75,33 @@ export const gameboardreceiveAttack = (board: Board, cordinates: Cordinates) => 
 	}
 	return;
 };
-export const gameboardputPiece = (board: Board, ship: Ship) => {
-	const shipCordinates = ship.cordinates;
-	shipCordinates.forEach((shipCordinate) => {
-		const targetSquare = board[shipCordinate.y - 1][shipCordinate.x - 1];
-		targetSquare.ship = ship;
-	});
+export const gameboardputPiece = (
+	board: Board,
+	length: number,
+	isVertical: boolean,
+	cordinates: Cordinates
+): boolean => {
+	const Cordinates = generateCordinates(cordinates, length, isVertical, board);
+	const ship = shipFactory(cordinates, length);
+	if (Cordinates) {
+		Cordinates.forEach((cordinate) => {
+			const targetSquare = board[cordinate.y - 1][cordinate.x - 1];
+			targetSquare.ship = ship;
+		});
+	} else {
+		return false;
+	}
+	return true;
+};
 
-	return;
+export const areCordinatesValid = (cordinates: Cordinates, board: Board): boolean => {
+	const yBoardLines = board[cordinates.y - 1];
+	if (yBoardLines) {
+		const targetCell = yBoardLines[cordinates.x - 1];
+		console.log(targetCell?.ship === null, targetCell !== undefined, targetCell);
+		if (targetCell !== undefined && targetCell.ship === null) {
+			return true;
+		}
+	}
+	return false;
 };

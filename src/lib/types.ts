@@ -12,19 +12,17 @@ export type Board = Cell[][];
 export interface ShipPart {
 	hit(): void;
 	isSunk: boolean;
-	cordinates: Cordinates;
 }
 
 export interface Ship {
 	shipParts: ShipPart[];
 	hit(cordinates: Cordinates): void;
 	isSunk(): boolean;
-	cordinates: Cordinates[];
 }
 
 export interface Gameboard {
 	receiveAttack(cordinates: Cordinates): void;
-	putPiece(ship: Ship, horizontal: boolean): void;
+	putPiece(length: number, isVertical: boolean, cordinates: Cordinates): void;
 	isLoose(): boolean;
 	board: Board;
 }
@@ -37,4 +35,7 @@ export interface Player {
 export interface Game {
 	players: [Player, Player];
 	isPlayerTurn: boolean;
+	paused: boolean;
+	switchPause(): void;
+	switchPlayerTurn(): void;
 }
