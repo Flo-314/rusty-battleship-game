@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Board from '$lib/components/board.svelte';
-	import type { Game, Board as BoardType } from '$lib/types';
+	import type { Game, Board as BoardType, Cordinates } from '$lib/types';
 	import { gameFactory, shipFactory } from '$lib/utils/battleship';
 
 	/* 
@@ -29,6 +29,29 @@
 		game = gameFactory(inputIntroduceName, 'computer');
 		gameStatus = 'piecePlacement';
 	};
+	const placingShip = (cordinates: Cordinates) => {
+		if (game && gameStatus === 'piecePlacement') {
+			const ships = [5, 4, 3, 2];
+			const gameBoard = game.players[0].gameboard;
+			const ship = shipFactory(cordinates, ships[shipIndex]);
+			gameBoard.putPiece(ship, true);
+			shipIndex += 1;
+			game.players[0].gameboard.board = game.players[0].gameboard.board;
+			if (shipIndex === ships.length) {
+				gameStatus = 'Battleship';
+			}
+		}
+	};
+	const onAttacking = (cordinates: Cordinates) => {
+		if (game && gameStatus === 'Battleship') {
+			const gameBoard = game?.players[1].gameboard;
+			const computer = game.players[1];
+			gameBoard?.receiveAttack(cordinates);
+			game.players[1].gameboard.board = game.players[1].gameboard.board;
+			const playergameBoard = game?.players[0].gameboard;
+			playergameBoard.receiveAttack(computer.makeAMove());
+		}
+	};
 </script>
 
 <div>
@@ -44,35 +67,16 @@
 			<Board
 				isBattleship={false}
 				on:placingShip={(e) => {
-					if (game && gameStatus === 'piecePlacement') {
-						const ships = [5, 4, 3, 2];
-						const cordinates = e.detail.cordinates;
-						const gameBoard = game.players[0].gameboard;
-						const ship = shipFactory(cordinates, ships[shipIndex]);
-						gameBoard.putPiece(ship, cordinates);
-						shipIndex += 1;
-						game.players[0].gameboard.board = game.players[0].gameboard.board;
-						if (shipIndex === ships.length) {
-							gameStatus = 'Battleship';
-						}
-					}
+					const cordinates = e.detail.cordinates;
+					placingShip(cordinates);
 				}}
 				isPlacing={gameStatus === 'piecePlacement'}
 				board={game.players[0].gameboard.board}
 			/>
 			<Board
 				on:receivingAttack={(e) => {
-					if (game && gameStatus === 'Battleship') {
-						const cordinates = e.detail.cordinates;
-						const gameBoard = game?.players[1].gameboard;
-						const computer = game.players[1];
-						gameBoard?.receiveAttack(cordinates);
-						game.players[1].gameboard.board = game.players[1].gameboard.board;
-
-						const playergameBoard = game?.players[0].gameboard;
-
-						playergameBoard.receiveAttack(computer.makeAMove());
-					}
+					const cordinates = e.detail.cordinates;
+					onAttacking(cordinates);
 				}}
 				isBattleship={gameStatus === 'Battleship'}
 				isPlacing={false}

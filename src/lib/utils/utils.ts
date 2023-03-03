@@ -1,18 +1,30 @@
 import type { Board, Cell, Cordinates, Ship, ShipPart } from '$lib/types';
 import { shipPartFactory, CellFactory } from './battleship';
 
-export const generateCordinates = (cordinates: Cordinates, length: number): Cordinates[] => {
+export const generateCordinates = (
+	cordinates: Cordinates,
+	length: number,
+	isVertical?: boolean
+): Cordinates[] => {
 	const newCordinates: Cordinates[] = [];
 	for (let i = 0; i < length; i++) {
 		const newCordinate = { ...cordinates };
-		newCordinate.x += i;
+		if (!isVertical) {
+			newCordinate.x += i;
+		} else {
+			newCordinate.y += i;
+		}
 		newCordinates.push(newCordinate);
 	}
 	return newCordinates;
 };
 
-export const generateShipParts = (cordinates: Cordinates, length: number): ShipPart[] => {
-	const Cordinates = generateCordinates(cordinates, length);
+export const generateShipParts = (
+	cordinates: Cordinates,
+	length: number,
+	isVertical?: boolean
+): ShipPart[] => {
+	const Cordinates = generateCordinates(cordinates, length, isVertical);
 
 	return Cordinates.map((cordinates: Cordinates) => {
 		return shipPartFactory(cordinates);

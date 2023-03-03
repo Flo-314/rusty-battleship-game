@@ -59,6 +59,28 @@ describe('Ship', () => {
 		expect(ship2.cordinates[0].x).toBe(3);
 		expect(ship2.cordinates[1].x).toBe(4);
 	});
+	test('if the isvertical cordinates works ', () => {
+		const defaultLength = 3;
+		const defaultCordinates = { x: 1, y: 1 };
+		const defaultShip = shipFactory(defaultCordinates, defaultLength, true);
+
+		expect(defaultShip.cordinates[0].x).toBe(1);
+		expect(defaultShip.cordinates[0].y).toBe(1);
+		expect(defaultShip.cordinates[1].y).toBe(2);
+		expect(defaultShip.cordinates[2].y).toBe(3);
+
+		/* 	expect(defaultShip.cordinates.length).toBe(defaultLength);
+
+		const ship = shipFactory({ x: 4, y: 1 }, 4);
+		expect(ship.cordinates[0].x).toBe(4);
+		expect(ship.cordinates[1].x).toBe(5);
+		expect(ship.cordinates[2].x).toBe(6);
+		expect(ship.cordinates[3].x).toBe(7);
+
+		const ship2 = shipFactory({ x: 3, y: 2 }, 2);
+		expect(ship2.cordinates[0].x).toBe(3);
+		expect(ship2.cordinates[1].x).toBe(4); */
+	});
 	test('if the shipParts are working correctly ', () => {
 		expect(defaultShip.shipParts.length).toBe(defaultLength);
 	});
@@ -228,8 +250,4 @@ describe('gameFactory', () => {
 		game.switchPlayerTurn();
 		expect(game.isPlayerTurn).toBe(true);
 	});
-});
-
-describe('game logic', () => {
-	//
 });
