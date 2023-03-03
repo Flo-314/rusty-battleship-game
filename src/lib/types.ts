@@ -21,10 +21,11 @@ export interface Ship {
 }
 
 export interface Gameboard {
-	receiveAttack(cordinates: Cordinates): void;
-	putPiece(length: number, isVertical: boolean, cordinates: Cordinates): void;
+	receiveAttack(cordinates: Cordinates): boolean;
+	putPiece(length: number, isVertical: boolean, cordinates: Cordinates): boolean;
 	isLoose(): boolean;
 	board: Board;
+	putAutomaticlyAllPieces(): void;
 }
 export interface Player {
 	gameboard: Gameboard;

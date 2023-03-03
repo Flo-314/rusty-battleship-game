@@ -1,6 +1,5 @@
-import type { Board, Cell, Cordinates, Ship, ShipPart } from '$lib/types';
+import type { Board, Cell, Cordinates, Gameboard, Ship, ShipPart } from '$lib/types';
 import { shipPartFactory, CellFactory, shipFactory } from './battleship';
-
 export const generateCordinates = (
 	cordinates: Cordinates,
 	length: number,
@@ -69,11 +68,14 @@ export const gameboardIsLoose = (board: Board) => {
 
 export const gameboardreceiveAttack = (board: Board, cordinates: Cordinates) => {
 	const targetSquare = board[cordinates.y - 1][cordinates.x - 1];
-	targetSquare.hit = true;
-	if (targetSquare.ship) {
-		targetSquare.ship.hit(cordinates);
+	if (targetSquare.hit === false) {
+		targetSquare.hit = true;
+		if (targetSquare.ship) {
+			targetSquare.ship.hit(cordinates);
+		}
+		return true;
 	}
-	return;
+	return false;
 };
 export const gameboardputPiece = (
 	board: Board,
@@ -93,12 +95,26 @@ export const gameboardputPiece = (
 	}
 	return true;
 };
+export const gameboardPutAutomaticlyAllPieces = (putPiece: Gameboard['putPiece']) => {
+	const ships = [5, 4, 3, 2];
+	ships.forEach((ship) => {
+		let isShipPlaced = false;
+		const isHorizontal = Math.random() < 0.5;
+
+		while (isShipPlaced === false) {
+			const randomCordinates = {
+				x: Math.floor(Math.random() * 10),
+				y: Math.floor(Math.random() * 10)
+			};
+			isShipPlaced = putPiece(ship, isHorizontal, randomCordinates);
+		}
+	});
+};
 
 export const areCordinatesValid = (cordinates: Cordinates, board: Board): boolean => {
 	const yBoardLines = board[cordinates.y - 1];
 	if (yBoardLines) {
 		const targetCell = yBoardLines[cordinates.x - 1];
-		console.log(targetCell?.ship === null, targetCell !== undefined, targetCell);
 		if (targetCell !== undefined && targetCell.ship === null) {
 			return true;
 		}

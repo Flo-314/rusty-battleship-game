@@ -38,7 +38,7 @@
 				class="caja"
 				class:shipBad={cell.ship}
 			>
-				{cell.ship ? 'O' : ''}
+				{cell.ship && cell.hit !== true ? 'O' : ''}
 				{cell.hit ? 'X' : ''}
 			</div>
 		{/each}

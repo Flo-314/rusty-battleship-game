@@ -21,7 +21,7 @@
 
 	//juego
 	let inputIntroduceName = '';
-	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' = 'piecePlacement';
+	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' | 'results' = 'piecePlacement';
 	let game: null | Game = null;
 	let shipIndex: number = 0;
 	let isVertical: boolean = false;
@@ -35,15 +35,13 @@
 		if (game && gameStatus === 'piecePlacement') {
 			const gameBoard = game?.players[0].gameboard;
 			const isPieceValid = gameBoard.putPiece(ships[shipIndex], isVertical, cordinates);
-			console.log(isPieceValid);
 			if (isPieceValid) {
 				shipIndex += 1;
 				game.players[0].gameboard.board = game.players[0].gameboard.board;
 				if (shipIndex === ships.length) {
 					gameStatus = 'Battleship';
+					game?.players[1].gameboard.putAutomaticlyAllPieces();
 				}
-			} else {
-				console.log('asd');
 			}
 		}
 	};
@@ -51,10 +49,27 @@
 		if (game && gameStatus === 'Battleship') {
 			const gameBoard = game?.players[1].gameboard;
 			const computer = game.players[1];
-			gameBoard?.receiveAttack(cordinates);
-			game.players[1].gameboard.board = game.players[1].gameboard.board;
-			const playergameBoard = game?.players[0].gameboard;
-			playergameBoard.receiveAttack(computer.makeAMove());
+			const isUserAttackValid = gameBoard?.receiveAttack(cordinates);
+			if (isUserAttackValid === true) {
+				game.players[1].gameboard.board = game.players[1].gameboard.board;
+
+				const playergameBoard = game?.players[0].gameboard;
+				let isComputerMoveValid;
+				if (computer.gameboard.isLoose() === true) {
+					gameStatus = 'results';
+					return;
+				}
+				do {
+					isComputerMoveValid = playergameBoard.receiveAttack(computer.makeAMove());
+					prompt('person wins');
+				} while (isComputerMoveValid === false);
+
+				if (gameBoard.isLoose() === true) {
+					gameStatus = 'results';
+					prompt('comptuer wins');
+					return;
+				}
+			}
 		}
 	};
 

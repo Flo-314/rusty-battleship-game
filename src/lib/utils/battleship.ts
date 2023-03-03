@@ -1,6 +1,7 @@
 import type { Cordinates, ShipPart, Ship, Gameboard, Board, Cell, Player, Game } from '$lib/types';
 import {
 	gameboardIsLoose,
+	gameboardPutAutomaticlyAllPieces,
 	gameboardputPiece,
 	gameboardreceiveAttack,
 	generateShipParts,
@@ -54,14 +55,16 @@ export const gameboardFactory = (): Gameboard => {
 	const putPiece = (length: number, horizontal: boolean, cordinates: Cordinates): boolean => {
 		return gameboardputPiece(board, length, horizontal, cordinates);
 	};
-	const receiveAttack = (cordinates: Cordinates) => {
-		gameboardreceiveAttack(board, cordinates);
-	};
 	const isLoose = (): boolean => {
 		return gameboardIsLoose(board);
 	};
-
-	const gameBoard: Gameboard = { board, putPiece, isLoose, receiveAttack };
+	const receiveAttack = (cordinates: Cordinates) => {
+		return gameboardreceiveAttack(board, cordinates);
+	};
+	const putAutomaticlyAllPieces = () => {
+		return gameboardPutAutomaticlyAllPieces(putPiece);
+	};
+	const gameBoard: Gameboard = { board, putPiece, isLoose, receiveAttack, putAutomaticlyAllPieces };
 
 	return gameBoard;
 };
