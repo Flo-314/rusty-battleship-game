@@ -81,28 +81,60 @@ export const playerFactory = (name: string, isComputer: boolean): Player => {
 export const gameFactory = (player1Name: string, player2Name: string): Game => {
 	// eslint-disable-next-line prefer-const
 	let game: Game;
-	const switchPlayerTurn = () => {
-		game.isPlayerTurn = !game.isPlayerTurn;
-	};
 
 	const player1 = playerFactory(player1Name, false);
 	const player2 = playerFactory(player2Name, true);
 	const startGame = () => {
 		return;
 	};
-	const placeShip = () => {
-		return;
+	const placeShip: Game['placeShip'] = (
+		cordinates: Cordinates,
+		isVertical,
+		length: number,
+		isLastPiece?: boolean
+	) => {
+		if (game) {
+			const gameBoard = game?.players[0].gameboard;
+			const isPieceValid = gameBoard.putPiece(length, isVertical, cordinates);
+			if (isPieceValid) {
+				if (isLastPiece) {
+					game?.players[1].gameboard.putAutomaticlyAllPieces();
+				}
+				return true;
+			}
+		}
+		return false;
 	};
-	const attack = () => {
-		return;
+	const attack = (cordinates: Cordinates) => {
+		if (game) {
+			const personGameboard: Gameboard = game?.players[1].gameboard;
+			const Computer: Player = game.players[1];
+			const isUserAttackValid = personGameboard?.receiveAttack(cordinates);
+			if (isUserAttackValid === true) {
+				const playergameBoard = game?.players[0].gameboard;
+				if (Computer.gameboard.isLoose() === true) {
+					prompt('person wins');
+				} else {
+					let isComputerMoveValid;
+
+					do {
+						isComputerMoveValid = playergameBoard.receiveAttack(Computer.makeAMove());
+					} while (isComputerMoveValid === false);
+
+					if (personGameboard.isLoose() === true) {
+						prompt('comptuer wins');
+					}
+				}
+				return true;
+			}
+		}
+		return false;
 	};
 	game = {
 		attack,
 		startGame,
 		placeShip,
-		players: [player1, player2],
-		isPlayerTurn: true,
-		paused: false
+		players: [player1, player2]
 	};
 	return game;
 };

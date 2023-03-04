@@ -191,7 +191,6 @@ describe('gameFactory', () => {
 		expect(game).toBeDefined();
 		expect(game.players[0]).toBeDefined();
 		expect(game.players[1]).toBeDefined();
-		expect(game.isPlayerTurn).toBeDefined();
 		expect(game.placeShip).toBeDefined();
 		expect(game.startGame).toBeDefined();
 		expect(game.attack).toBeDefined();

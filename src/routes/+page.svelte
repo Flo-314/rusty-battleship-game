@@ -25,50 +25,36 @@
 	let game: null | Game = null;
 	let shipIndex: number = 0;
 	let isVertical: boolean = false;
+	const ships = [5, 4, 3, 2];
 
 	const startGame = (inputIntroduceName: string) => {
 		game = gameFactory(inputIntroduceName, 'computer');
 		gameStatus = 'piecePlacement';
 	};
 	const placingShip = (cordinates: Cordinates) => {
-		const ships = [5, 4, 3, 2];
-		if (game && gameStatus === 'piecePlacement') {
-			const gameBoard = game?.players[0].gameboard;
-			const isPieceValid = gameBoard.putPiece(ships[shipIndex], isVertical, cordinates);
+		if (game) {
+			const isPieceValid = game.placeShip(
+				cordinates,
+				isVertical,
+				ships[shipIndex],
+				shipIndex === ships.length - 1
+			);
 			if (isPieceValid) {
+				game.players[0].gameboard.board = game?.players[0].gameboard.board;
 				shipIndex += 1;
-				game.players[0].gameboard.board = game.players[0].gameboard.board;
-				if (shipIndex === ships.length) {
+				if (shipIndex === 4) {
 					gameStatus = 'battleship';
-					game?.players[1].gameboard.putAutomaticlyAllPieces();
 				}
 			}
 		}
 	};
 	const onAttacking = (cordinates: Cordinates) => {
-		if (game && gameStatus === 'battleship') {
-			const gameBoard = game?.players[1].gameboard;
-			const computer = game.players[1];
-			const isUserAttackValid = gameBoard?.receiveAttack(cordinates);
+		if (game) {
+			const isUserAttackValid = game.attack(cordinates);
 			if (isUserAttackValid === true) {
 				game.players[1].gameboard.board = game.players[1].gameboard.board;
-
-				const playergameBoard = game?.players[0].gameboard;
-				let isComputerMoveValid;
-				if (computer.gameboard.isLoose() === true) {
-					gameStatus = 'results';
-					prompt('person wins');
-
-					return;
-				}
-				do {
-					isComputerMoveValid = playergameBoard.receiveAttack(computer.makeAMove());
-				} while (isComputerMoveValid === false);
-
-				if (gameBoard.isLoose() === true) {
-					gameStatus = 'results';
-					prompt('comptuer wins');
-					return;
+				if (typeof isUserAttackValid === 'string') {
+					prompt(isUserAttackValid);
 				}
 			}
 		}
@@ -104,6 +90,7 @@
 				isBattleship={gameStatus === 'battleship'}
 				isPlacing={false}
 				board={game?.players[1].gameboard.board}
+				isComputer={true}
 			/>
 		</div>
 	{/if}

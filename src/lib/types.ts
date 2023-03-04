@@ -35,9 +35,12 @@ export interface Player {
 }
 export interface Game {
 	players: [Player, Player];
-	isPlayerTurn: boolean;
-	paused: boolean;
-	placeShip(cordinates: Cordinates, isVertical: boolean, length: number): void;
+	placeShip(
+		cordinates: Cordinates,
+		isVertical: boolean,
+		length: number,
+		isLastPiece: boolean
+	): boolean;
 	startGame(): void;
-	attack(cordinates: Cordinates): void;
+	attack(cordinates: Cordinates): boolean | 'computerWins' | 'personWins';
 }

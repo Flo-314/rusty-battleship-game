@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-
+	export let isComputer: boolean = false;
 	export let board: Board;
 	export let isPlacing: boolean;
 	export let isBattleship: boolean;
@@ -38,7 +38,7 @@
 				class="caja"
 				class:shipBad={cell.ship}
 			>
-				{cell.ship && cell.hit !== true ? 'O' : ''}
+				{!isComputer && cell.ship && cell.hit !== true ? 'O' : ''}
 				{cell.hit ? 'X' : ''}
 			</div>
 		{/each}
