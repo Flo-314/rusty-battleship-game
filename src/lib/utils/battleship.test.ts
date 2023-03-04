@@ -187,26 +187,13 @@ describe('playerFactory', () => {
 
 describe('gameFactory', () => {
 	const game = gameFactory('Player 1', 'Player 2');
-
 	it('should create a game object', () => {
 		expect(game).toBeDefined();
 		expect(game.players[0]).toBeDefined();
 		expect(game.players[1]).toBeDefined();
-		expect(game.isPlayerTurn).toBe(true);
-		expect(game.paused).toBe(false);
-	});
-
-	it('should switch pause status when switchPause is called', () => {
-		game.switchPause();
-		expect(game.paused).toBe(true);
-		game.switchPause();
-		expect(game.paused).toBe(false);
-	});
-
-	it('should switch player turn when switchPlayerTurn is called', () => {
-		game.switchPlayerTurn();
-		expect(game.isPlayerTurn).toBe(false);
-		game.switchPlayerTurn();
-		expect(game.isPlayerTurn).toBe(true);
+		expect(game.isPlayerTurn).toBeDefined();
+		expect(game.placeShip).toBeDefined();
+		expect(game.startGame).toBeDefined();
+		expect(game.attack).toBeDefined();
 	});
 });

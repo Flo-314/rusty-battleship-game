@@ -21,7 +21,7 @@
 
 	//juego
 	let inputIntroduceName = '';
-	let gameStatus: 'selectName' | 'piecePlacement' | 'Battleship' | 'results' = 'piecePlacement';
+	let gameStatus: 'selectName' | 'piecePlacement' | 'battleship' | 'results' = 'piecePlacement';
 	let game: null | Game = null;
 	let shipIndex: number = 0;
 	let isVertical: boolean = false;
@@ -39,14 +39,14 @@
 				shipIndex += 1;
 				game.players[0].gameboard.board = game.players[0].gameboard.board;
 				if (shipIndex === ships.length) {
-					gameStatus = 'Battleship';
+					gameStatus = 'battleship';
 					game?.players[1].gameboard.putAutomaticlyAllPieces();
 				}
 			}
 		}
 	};
 	const onAttacking = (cordinates: Cordinates) => {
-		if (game && gameStatus === 'Battleship') {
+		if (game && gameStatus === 'battleship') {
 			const gameBoard = game?.players[1].gameboard;
 			const computer = game.players[1];
 			const isUserAttackValid = gameBoard?.receiveAttack(cordinates);
@@ -57,11 +57,12 @@
 				let isComputerMoveValid;
 				if (computer.gameboard.isLoose() === true) {
 					gameStatus = 'results';
+					prompt('person wins');
+
 					return;
 				}
 				do {
 					isComputerMoveValid = playergameBoard.receiveAttack(computer.makeAMove());
-					prompt('person wins');
 				} while (isComputerMoveValid === false);
 
 				if (gameBoard.isLoose() === true) {
@@ -100,7 +101,7 @@
 					const cordinates = e.detail.cordinates;
 					onAttacking(cordinates);
 				}}
-				isBattleship={gameStatus === 'Battleship'}
+				isBattleship={gameStatus === 'battleship'}
 				isPlacing={false}
 				board={game?.players[1].gameboard.board}
 			/>

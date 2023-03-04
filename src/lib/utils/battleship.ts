@@ -84,18 +84,25 @@ export const gameFactory = (player1Name: string, player2Name: string): Game => {
 	const switchPlayerTurn = () => {
 		game.isPlayerTurn = !game.isPlayerTurn;
 	};
-	const switchPause = () => {
-		game.paused = !game.paused;
-	};
+
 	const player1 = playerFactory(player1Name, false);
 	const player2 = playerFactory(player2Name, true);
-
+	const startGame = () => {
+		return;
+	};
+	const placeShip = () => {
+		return;
+	};
+	const attack = () => {
+		return;
+	};
 	game = {
+		attack,
+		startGame,
+		placeShip,
 		players: [player1, player2],
 		isPlayerTurn: true,
-		paused: false,
-		switchPause,
-		switchPlayerTurn
+		paused: false
 	};
 	return game;
 };

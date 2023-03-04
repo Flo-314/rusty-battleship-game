@@ -37,6 +37,7 @@ export interface Game {
 	players: [Player, Player];
 	isPlayerTurn: boolean;
 	paused: boolean;
-	switchPause(): void;
-	switchPlayerTurn(): void;
+	placeShip(cordinates: Cordinates, isVertical: boolean, length: number): void;
+	startGame(): void;
+	attack(cordinates: Cordinates): void;
 }
