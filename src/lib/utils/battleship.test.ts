@@ -85,6 +85,13 @@ describe('Ship', () => {
 		ship3.hit({ x: 6, y: 1 });
 		ship3.hit({ x: 8, y: 1 });
 		expect(ship3.isSunk()).toBe(false);
+
+		const ship4 = shipFactory({ x: 8, y: 8 }, 2, true);
+		ship4.hit({ x: 8, y: 8 });
+		ship4.hit({ x: 8, y: 9 });
+		console.log(ship3, ship4);
+
+		expect(ship4.isSunk()).toBe(true);
 	});
 });
 describe('GameBoard', () => {

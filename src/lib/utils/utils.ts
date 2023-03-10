@@ -35,9 +35,14 @@ export const generateShipParts = (length: number): ShipPart[] => {
 	return shipParts;
 };
 export const getBoard = () => new Array(10).fill(new Array(10).fill(CellFactory()));
-export const hitShip = (ship: Ship, cordinates: Cordinates, hitCordinates: Cordinates) => {
+export const hitShip = (
+	ship: Ship,
+	cordinates: Cordinates,
+	hitCordinates: Cordinates,
+	isVertical: boolean
+) => {
 	const shipParts = ship.shipParts;
-	const index = hitCordinates.x - cordinates.x;
+	const index = isVertical ? hitCordinates.y - cordinates.y : hitCordinates.x - cordinates.x;
 	const shipPart = shipParts[index];
 
 	shipPart.hit();
@@ -84,7 +89,7 @@ export const gameboardputPiece = (
 	cordinates: Cordinates
 ): boolean => {
 	const Cordinates = generateCordinates(cordinates, length, isVertical, board);
-	const ship = shipFactory(cordinates, length);
+	const ship = shipFactory(cordinates, length, isVertical);
 	if (Cordinates) {
 		Cordinates.forEach((cordinate) => {
 			const targetSquare = board[cordinate.y - 1][cordinate.x - 1];
@@ -99,14 +104,14 @@ export const gameboardPutAutomaticlyAllPieces = (putPiece: Gameboard['putPiece']
 	const ships = [5, 4, 3, 2];
 	ships.forEach((ship) => {
 		let isShipPlaced = false;
-		const isHorizontal = Math.random() < 0.5;
+		const isVertical = Math.random() < 0.5;
 
 		while (isShipPlaced === false) {
 			const randomCordinates = {
 				x: Math.floor(Math.random() * 10),
 				y: Math.floor(Math.random() * 10)
 			};
-			isShipPlaced = putPiece(ship, isHorizontal, randomCordinates);
+			isShipPlaced = putPiece(ship, isVertical, randomCordinates);
 		}
 	});
 };

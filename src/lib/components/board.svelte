@@ -18,6 +18,7 @@
 		dispatch('receivingAttack', {
 			cordinates
 		});
+		console.log(board);
 	};
 </script>
 
@@ -25,6 +26,8 @@
 	{#each board as yLine, i}
 		{#each yLine as cell, j}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			{@const isSunk = cell?.ship?.isSunk()}
+
 			<div
 				on:click={() => {
 					const cordinates = { x: j + 1, y: i + 1 };
@@ -36,7 +39,8 @@
 					}
 				}}
 				class="caja"
-				class:shipBad={cell.ship}
+				class:sunked={isSunk}
+				class:redColor={cell.hit && cell?.ship && !isSunk}
 			>
 				{!isComputer && cell.ship && cell.hit !== true ? 'O' : ''}
 				{cell.hit ? 'X' : ''}
@@ -62,5 +66,11 @@
 		background-color: black;
 		padding: 5px;
 		width: 45%;
+	}
+	.sunked {
+		background-color: red;
+	}
+	.redColor {
+		color: red;
 	}
 </style>

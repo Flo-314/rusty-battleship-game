@@ -9,12 +9,12 @@ import {
 	isShipSunk
 } from './utils';
 
-export const shipFactory = (cordinates: Cordinates, length: number): Ship => {
+export const shipFactory = (cordinates: Cordinates, length: number, isVertical = false): Ship => {
 	// eslint-disable-next-line prefer-const
 	let ship: Ship;
 
 	const hit = (hitCordinates: Cordinates): void => {
-		hitShip(ship, cordinates, hitCordinates);
+		hitShip(ship, cordinates, hitCordinates, isVertical);
 	};
 	const isSunk = (): boolean => {
 		return isShipSunk(ship);
@@ -26,7 +26,8 @@ export const shipFactory = (cordinates: Cordinates, length: number): Ship => {
 	ship = {
 		hit,
 		isSunk,
-		shipParts
+		shipParts,
+		isVertical
 	};
 	return ship;
 };
@@ -52,8 +53,8 @@ export const boardFactory = (): Board => {
 };
 export const gameboardFactory = (): Gameboard => {
 	const board = boardFactory();
-	const putPiece = (length: number, horizontal: boolean, cordinates: Cordinates): boolean => {
-		return gameboardputPiece(board, length, horizontal, cordinates);
+	const putPiece = (length: number, isVertical: boolean, cordinates: Cordinates): boolean => {
+		return gameboardputPiece(board, length, isVertical, cordinates);
 	};
 	const isLoose = (): boolean => {
 		return gameboardIsLoose(board);

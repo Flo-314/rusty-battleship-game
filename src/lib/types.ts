@@ -18,6 +18,7 @@ export interface Ship {
 	shipParts: ShipPart[];
 	hit(cordinates: Cordinates): void;
 	isSunk(): boolean;
+	isVertical?: boolean;
 }
 
 export interface Gameboard {
