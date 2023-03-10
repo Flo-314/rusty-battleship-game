@@ -50,10 +50,15 @@
 </div>
 
 <style>
+	* {
+		box-sizing: border-box;
+	}
 	.caja {
 		background-color: white;
 		border: 1px solid black;
-		padding: 40px;
+		width: 100%;
+		height: 100%;
+		padding: 1em;
 		font-size: 20px;
 		text-align: center;
 	}
@@ -65,7 +70,8 @@
 		gap: 1px;
 		background-color: black;
 		padding: 5px;
-		width: 45%;
+		width: 700px;
+		height: 700px;
 	}
 	.sunked {
 		background-color: red;

@@ -101,4 +101,7 @@
 		gap: 30px;
 		justify-content: center;
 	}
+	button {
+		font-size: 100px;
+	}
 </style>
